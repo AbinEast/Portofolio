@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhodes Island Terminal | Developer Profile</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- ARKNIGHTS / TACTICAL THEME VARIABLES --- */
+        :root {
+            --bg-color: #121212;
+            --panel-bg: rgba(30, 30, 30, 0.85);
+            --rhodes-cyan: #23F0FF;   /* High tech cyan */
+            --rhodes-yellow: #D7FC2C; /* Tactical yellow */
+            --rhodes-grey: #2b2b2b;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --grid-line: rgba(255, 255, 255, 0.05);
+            --border-width: 1px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif; /* Kotak & Tegas */
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.5;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px; /* Grid Pattern */
+        }
+
+        /* --- DECORATIVE NOISE OVERLAY --- */
+        body::after {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+            pointer-events: none; z-index: 9999; opacity: 0.3;
+        }
+
+        /* --- UTILITIES --- */
+        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; letter-spacing: 0.5px; }
+        .accent-text { color: var(--rhodes-cyan); }
+        .yellow-text { color: var(--rhodes-yellow); }
+        
+        /* --- NAVIGATION (HUD STYLE) --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; height: 70px;
+            background: rgba(18, 18, 18, 0.95);
+            border-bottom: 2px solid var(--rhodes-grey);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+        }
+        
+        .logo { 
+            font-size: 1.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .logo::before { content: "PRTS"; font-size: 0.8rem; background: var(--rhodes-yellow); color: black; padding: 2px 5px; font-family: 'JetBrains Mono'; }
+
+        .nav-links { display: flex; align-items: center; height: 100%; }
+        .nav-links a {
+            color: var(--text-muted); text-decoration: none; margin-left: 0; padding: 0 25px;
+            height: 100%; display: flex; align-items: center;
+            text-transform: uppercase; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px;
+            border-left: 1px solid transparent; border-right: 1px solid transparent;
+            transition: 0.2s;
+            position: relative;
+        }
+        /* Tactical Hover Effect */
+        .nav-links a:hover { 
+            color: var(--rhodes-cyan); 
+            background: rgba(35, 240, 255, 0.05);
+            border-left: 1px solid var(--rhodes-cyan);
+        }
+        .nav-links a.active::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--rhodes-cyan);
+        }
+
+        .menu-toggle { display: none; color: var(--rhodes-cyan); font-size: 1.5rem; cursor: pointer; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+            padding: 0 10%; 
+            position: relative; 
+            overflow: hidden; 
+            background: none;
+        }
+
+        .video-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; /* Taruh di belakang teks */
+        }
+
+        .bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Video akan mengisi penuh tanpa gepeng */
+        }
+
+        /* Overlay Gelap + Grid Pattern agar teks terbaca */
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(18, 18, 18, 0.75); /* Gelapkan video 75% */
+            
+            /* Tetap pertahankan Grid Pattern Arknights di atas video */
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            
+            /* Efek Scanline TV (Opsional, tambah kesan sci-fi) */
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(18, 18, 18, 0.75),
+                rgba(18, 18, 18, 0.75) 2px,
+                rgba(0, 0, 0, 0.8) 2px,
+                rgba(0, 0, 0, 0.8) 4px
+            );
+        }
+        
+        /* Decorative Side Bar */
+        .hero::before {
+            content: ""; position: absolute; left: 5%; top: 20%; bottom: 20%; width: 1px; background: var(--rhodes-grey);
+        }
+        .hero::after {
+            content: "SYSTEM_READY"; position: absolute; left: 3.8%; bottom: 20%; 
+            transform: rotate(-90deg); transform-origin: left bottom;
+            font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--rhodes-yellow);
+        }
+
+        .hero h1 { 
+            font-size: 4.5rem; line-height: 1; text-transform: uppercase; margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(35, 240, 255, 0.3);
+        }
+        /* --- GLITCH EFFECT CSS --- */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            color: var(--text-main); /* Warna dasar putih */
+        }
+
+        /* Membuat 2 lapisan duplikat teks untuk efek bayangan */
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text); /* Mengambil teks dari atribut HTML */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color); /* Menyembunyikan teks asli saat glitch */
+        }
+
+        /* Lapisan 1: Offset Magenta & Animasi Lambat */
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1; /* Warna Magenta Arknights */
+            clip: rect(24px, 550px, 90px, 0); /* Potongan awal */
+            animation: glitch-anim-1 3s infinite linear alternate-reverse;
+        }
+
+        /* Lapisan 2: Offset Cyan & Animasi Cepat */
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--rhodes-cyan); /* Warna Cyan Rhodes Island */
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+
+        /* Keyframes untuk animasi potongan acak (Tearing) */
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(30px, 9999px, 10px, 0); }
+            20% { clip: rect(60px, 9999px, 80px, 0); }
+            40% { clip: rect(10px, 9999px, 50px, 0); }
+            60% { clip: rect(90px, 9999px, 20px, 0); }
+            80% { clip: rect(40px, 9999px, 70px, 0); }
+            100% { clip: rect(75px, 9999px, 40px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(15px, 9999px, 85px, 0); }
+            15% { clip: rect(55px, 9999px, 35px, 0); }
+            30% { clip: rect(25px, 9999px, 95px, 0); }
+            45% { clip: rect(85px, 9999px, 15px, 0); }
+            60% { clip: rect(45px, 9999px, 65px, 0); }
+            75% { clip: rect(10px, 9999px, 50px, 0); }
+            90% { clip: rect(75px, 9999px, 25px, 0); }
+            100% { clip: rect(35px, 9999px, 80px, 0); }
+        }
+        
+        .hero p { 
+            font-family: 'JetBrains Mono'; color: var(--text-muted); max-width: 600px; margin-bottom: 40px; 
+            border-left: 3px solid var(--rhodes-yellow); padding-left: 20px;
+        }
+
+        /* TACTICAL BUTTON */
+        .btn {
+            padding: 15px 40px; background: transparent;
+            color: var(--rhodes-cyan); text-decoration: none; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;
+            border: 1px solid var(--rhodes-cyan);
+            position: relative; overflow: hidden;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: 0.3s;
+        }
+        .btn::before {
+            content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--rhodes-cyan); transition: 0.3s; z-index: -1;
+        }
+        .btn:hover { color: #000; }
+        .btn:hover::before { left: 0; }
+
+        /* --- TECH MARQUEE (CONTAINED VERSION) --- */
+        .tech-marquee {
+            width: 100%; 
+            margin: 0 auto;    /* Posisi Tengah */
+            
+            background: var(--rhodes-cyan); 
+            color: #000; 
+            padding: 10px 0;
+            
+            font-family: 'JetBrains Mono'; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* Blur effect di kiri/kanan agar teks terlihat muncul/hilang halus di batas container */
+        .tech-marquee::before, .tech-marquee::after {
+            content: ""; position: absolute; top: 0; width: 50px; height: 100%; z-index: 2;
+            pointer-events: none;
+        }
+        .tech-marquee::before { 
+            left: 0; 
+            background: linear-gradient(to right, var(--rhodes-cyan), transparent); 
+        }
+        .tech-marquee::after { 
+            right: 0; 
+            background: linear-gradient(to left, var(--rhodes-cyan), transparent); 
+        }
+
+        .marquee-content { display: flex; animation: scroll 30s linear infinite; }
+        .tech-item { margin: 0 30px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- OPERATOR PHOTO STYLES --- */
+        .operator-photo {
+            width: 180px; height: 260px; /* Ukuran pas foto */
+            flex-shrink: 0; /* Agar tidak gepeng saat layar kecil */
+            border: 1px solid var(--rhodes-grey);
+            padding: 4px; /* Bingkai dalam */
+            background: rgba(0,0,0,0.5);
+            position: relative;
+            
+            /* Potongan sudut khas Arknights */
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%
+            );
+            transition: 0.3s;
+        }
+
+        .operator-photo img {
+            width: 100%; height: 100%; 
+            object-fit: cover; /* Agar gambar mengisi penuh */
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        /* Dekorasi garis scan pada foto */
+        .operator-photo::before {
+            content: "IMG_LOAD"; position: absolute; top: 5px; left: 5px;
+            font-family: 'JetBrains Mono'; font-size: 0.6rem; color: rgba(255,255,255,0.5);
+            z-index: 2;
+        }
+
+        /* --- HEXAGON RADAR CHART CSS --- */
+        .stats-container {
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.4); border: 1px solid var(--rhodes-grey);
+            padding: 40px; position: relative;
+            /* Sudut terpotong khas Arknights */
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        }
+
+        /* Bagian Kiri: Info Text */
+        .stats-info { flex: 1; min-width: 300px; }
+        .stat-row { 
+            display: flex; justify-content: space-between; border-bottom: 1px dashed var(--rhodes-grey); 
+            padding: 8px 0; font-family: 'JetBrains Mono'; font-size: 0.9rem; 
+        }
+        .stat-label { color: var(--text-muted); }
+        .stat-val { color: var(--rhodes-cyan); font-weight: bold; }
+
+        /* Bagian Kanan: Radar Chart SVG */
+        .radar-chart-container {
+            position: relative; width: 300px; height: 300px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* Buat grid awalnya tipis/samar */
+        .radar-grid {
+            fill: none;
+            stroke: var(--rhodes-grey);
+            stroke-width: 1;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        /* Saat aktif, grid muncul penuh */
+        .radar-chart-container.active .radar-grid {
+            opacity: 1; /* Atau opacity sesuai desain awal (0.3 atau 0.5 untuk layer belakang) */
+            animation: grid-flicker 1s ease forwards;
+        }
+
+        /* Animasi kedip seperti lampu neon/hologram nyala */
+        @keyframes grid-flicker {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            20% { opacity: 0; }
+            40% { opacity: 1; }
+            60% { opacity: 0.5; }
+            100% { opacity: 1; } /* Sesuaikan opacity akhir jika perlu */
+        }
+        /* --- UPDATED RADAR CHART ANIMATION --- */
+        .radar-data {
+            fill: rgba(35, 240, 255, 0.2); 
+            stroke: var(--rhodes-cyan); 
+            stroke-width: 2;
+            filter: drop-shadow(0 0 5px var(--rhodes-cyan));
+            
+            /* PENTING: Set titik transformasi di tengah agar mengembang dari pusat */
+            transform-origin: center;
+            
+            /* STATE AWAL: Tersembunyi & Skala 0 (Kosong) */
+            transform: scale(0);
+            opacity: 0;
+            
+            /* Transisi Halus dengan efek 'Spring' (memantul sedikit di akhir) */
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 1s ease;
+            
+            /* Delay: Tunggu 0.3 detik setelah container muncul, baru chart mengisi */
+            transition-delay: 0.3s;
+        }
+
+        /* STATE AKHIR: Saat container terlihat (mendapat class .active dari JS) */
+        /* Selector ini menargetkan .radar-data di dalam .radar-chart-container yang aktif */
+        .radar-chart-container.active .radar-data {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .radar-label { font-family: 'Rajdhani'; font-weight: 700; font-size: 0.8rem; fill: #fff; text-anchor: middle; }
+        
+        @keyframes radar-grow {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- TECH STACK GRID (FULL WIDTH) --- */
+        .tech-stack-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
+            gap: 15px;
+            
+            /* PERBAIKAN LEBAR DISINI: */
+            width: 100%;       
+            max-width: 1200px; /* Samakan dengan lebar tilt-wrapper di atasnya */
+            margin: 30px auto 0 auto; /* 'auto' di kiri-kanan agar posisinya di tengah */
+            
+            padding: 0;
+        }
+
+        .tech-badge {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid var(--rhodes-grey);
+            padding: 15px 10px;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.5rem; 
+            transition: 0.3s;
+            position: relative;
+            /* Potongan sudut taktis */
+            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+        }
+        
+        .tech-badge:hover::after {
+            content: attr(data-name);
+            position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+            background: var(--rhodes-yellow); color: #000;
+            padding: 4px 8px; font-size: 0.8rem; font-family: 'JetBrains Mono'; font-weight: bold;
+            white-space: nowrap; pointer-events: none;
+            box-shadow: 0 0 10px var(--rhodes-yellow);
+            z-index: 20;
+        }
+        .tech-badge:hover {
+            border-color: var(--rhodes-cyan);
+            color: var(--rhodes-cyan);
+            background: rgba(35, 240, 255, 0.1);
+            transform: translateY(-5px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        /* --- SECTIONS --- */
+        section { padding: 100px 10%; position: relative; }
+        .section-header { 
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 60px;
+            border-bottom: 1px solid var(--rhodes-grey); padding-bottom: 10px;
+        }
+        .section-title { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 3px; }
+        .section-number { font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--rhodes-grey); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        /* --- TACTICAL CARDS --- */
+        .card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--rhodes-grey);
+            padding: 25px;
+            position: relative;
+            transition: 0.3s;
+            /* Arknights Style Cut Corners */
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                0 100%
+            );
+        }
+        /* Corner Decoration */
+        .card::after {
+            content: ""; position: absolute; bottom: 0; right: 0; width: 20px; height: 20px;
+            background: linear-gradient(135deg, transparent 50%, var(--rhodes-grey) 50%);
+            transition: 0.3s;
+        }
+
+        .card:hover { 
+            border-color: var(--rhodes-cyan); 
+            transform: translateY(-5px); 
+            box-shadow: 0 0 15px rgba(35, 240, 255, 0.1);
+        }
+        .card:hover::after { background: linear-gradient(135deg, transparent 50%, var(--rhodes-cyan) 50%); }
+
+        .card h3 { font-size: 1.4rem; text-transform: uppercase; margin-bottom: 10px; color: #fff; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; }
+        
+        .project-image {
+            height: 160px; background: #000; border: 1px solid var(--rhodes-grey); margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; position: relative;
+            overflow: hidden;
+        }
+        .project-image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.4s; }
+        .card:hover .project-image img { filter: grayscale(0%); transform: scale(1.05); }
+        
+        /* Decorative "SCANNING" line on image */
+        .project-image::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--rhodes-cyan); opacity: 0; transition: 0.5s; z-index: 2;
+        }
+        .card:hover .project-image::before { top: 100%; opacity: 0.5; }
+
+        .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto; }
+        .tag { 
+            font-family: 'JetBrains Mono'; font-size: 0.7rem; padding: 4px 8px; 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--rhodes-grey); color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .card:hover .tag { color: var(--rhodes-cyan); border-color: var(--rhodes-cyan); }
+
+        /* --- CONTACT --- */
+        .social-links { margin-top: 40px; display: flex; justify-content: center; gap: 20px; }
+        .social-btn {
+            width: 60px; height: 60px; border: 1px solid var(--rhodes-grey);
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 1.5rem; text-decoration: none;
+            clip-path: polygon(20% 0, 100% 0, 100% 100%, 80% 100%, 0 100%, 0 0); /* Hex/Angular */
+            transition: 0.3s;
+        }
+        .social-btn:hover { background: var(--rhodes-yellow); color: #000; border-color: var(--rhodes-yellow); transform: scale(1.1); }
+
+        footer { 
+            text-align: center; padding: 40px; border-top: 1px solid var(--rhodes-grey); 
+            background: #000; color: var(--text-muted); font-family: 'JetBrains Mono'; font-size: 0.8rem; 
+        }
+
+        /* --- 1. ENDFIELD INDUSTRIAL STRIPES (HAZARD PATTERN) --- */
+        .hazard-bar {
+            height: 8px; width: 100px;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--rhodes-yellow),
+                var(--rhodes-yellow) 10px,
+                #000 10px,
+                #000 20px
+            );
+            margin-top: 10px;
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        }
+
+        /* Update Section Header agar lebih Industrial */
+        .section-header {
+            display: flex; flex-direction: column; align-items: center; 
+            margin-bottom: 80px; border-bottom: none; /* Hapus garis lama */
+            position: relative;
+        }
+        .section-header::after {
+            content: ""; width: 100%; height: 1px; background: var(--rhodes-grey);
+            position: absolute; bottom: 0; left: 0; z-index: -1;
+        }
+
+        /* --- 2. 3D ISOMETRIC CARDS (AIC STYLE) --- */
+        /* Container Grid diubah perspektifnya */
+        #projects .grid {
+            perspective: 1000px; /* Memberikan kedalaman 3D */
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid var(--rhodes-grey);
+            /* Transformasi awal: Sedikit miring agar terlihat 3D */
+            transform: rotateX(10deg) rotateY(0deg); 
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            
+            /* Dekorasi sudut teknis */
+            position: relative;
+        }
+
+        /* Efek Hover: Kartu "Bangun" dan Bersinar */
+        .card:hover {
+            transform: rotateX(0deg) translateY(-15px) scale(1.02);
+            border-color: var(--rhodes-yellow);
+            box-shadow: 
+                0 0 20px rgba(215, 252, 44, 0.1), /* Glow Kuning */
+                0 30px 50px rgba(0,0,0,0.8);      /* Bayangan dalam */
+            z-index: 10;
+        }
+
+        /* Dekorasi "Ruler/Scale" di samping kartu */
+        .card::before {
+            content: ""; position: absolute; left: -10px; top: 20px; bottom: 20px; width: 4px;
+            border-top: 1px solid var(--text-muted); border-bottom: 1px solid var(--text-muted);
+            background: repeating-linear-gradient(
+                to bottom, 
+                var(--text-muted), 
+                var(--text-muted) 1px, 
+                transparent 1px, 
+                transparent 5px
+            );
+            opacity: 0.3; transition: 0.3s;
+        }
+        .card:hover::before { opacity: 1; border-color: var(--rhodes-yellow); background: repeating-linear-gradient(to bottom, var(--rhodes-yellow), var(--rhodes-yellow) 1px, transparent 1px, transparent 5px); }
+
+        /* Gambar Proyek dengan efek Hologram Scan */
+        .project-image {
+            height: 180px; background: #050505; border-bottom: 1px solid var(--rhodes-grey);
+            position: relative; overflow: hidden;
+        }
+        /* Scanline bergerak */
+        .project-image::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, var(--rhodes-cyan) 50%, transparent 60%);
+            background-size: 100% 200%;
+            opacity: 0.1;
+            animation: holograph-scan 3s infinite linear;
+            pointer-events: none;
+        }
+        @keyframes holograph-scan { 0% { background-position: 0% 0%; } 100% { background-position: 0% 200%; } }
+
+        /* --- 1. RGB GLITCH EFFECT ON HOVER (PROJECTS) --- */
+        /* Efek pecah warna pada ikon saat kartu disorot */
+        .card:hover .project-image i {
+            animation: glitch-shake 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #fff;
+            /* Membuat bayangan Merah dan Cyan */
+            text-shadow: 3px 0 #ff00c1, -3px 0 var(--rhodes-cyan);
+        }
+
+        /* Animasi getar cepat */
+        @keyframes glitch-shake {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* --- 3. SMOOTH REVEAL ANIMATION (RESTORED) --- */
+        /* Elemen disembunyikan dulu */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        /* Kelas aktif saat elemen masuk layar */
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- BOOT SEQUENCE STYLES --- */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .rhodes-logo-load {
+            width: 80px; height: 80px; border: 2px solid #fff;
+            margin-bottom: 20px; position: relative;
+            animation: pulse 2s infinite;
+        }
+        .rhodes-logo-load::after {
+            content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60%; height: 60%; background: var(--rhodes-cyan);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /* Hexagon Shape */
+        }
+
+        .loading-text { color: var(--rhodes-cyan); font-size: 0.9rem; margin-top: 10px; letter-spacing: 1px; }
+        
+        .progress-bar {
+            width: 300px; height: 4px; background: #333; margin-top: 15px; position: relative;
+        }
+        .progress-fill {
+            height: 100%; background: var(--rhodes-yellow); width: 0%;
+            transition: width 0.2s ease-in-out;
+            box-shadow: 0 0 10px var(--rhodes-yellow);
+        }
+
+        @keyframes pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); } 
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } 
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero { padding: 0 20px; }
+            .hero::before { display: none; }
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: absolute; top: 70px; right: 0; width: 70%; height: calc(100vh - 70px);
+                background: #000; flex-direction: column; padding: 0;
+                transform: translateX(100%); transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                border-left: 1px solid var(--rhodes-cyan);
+            }
+            .nav-links.active { transform: translateX(0); }
+            .nav-links a { width: 100%; height: 80px; border-bottom: 1px solid var(--rhodes-grey); padding-left: 30px; }
+        }
+
+        /* --- 2. CORNER BRACKETS ANIMATION (TARGET LOCKING) --- */
+        /* Tambahkan class ini ke elemen yang ingin diberi efek kurung sudut */
+        .bracket-box {
+            position: relative;
+        }
+        
+        /* Sudut Kiri Atas & Kanan Bawah */
+        .bracket-box::before, .bracket-box::after {
+            content: ""; position: absolute;
+            width: 10px; height: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            pointer-events: none; /* Agar tidak mengganggu klik */
+        }
+
+        /* Posisi Awal */
+        .bracket-box::before { top: 0; left: 0; border-top: 1px solid var(--rhodes-cyan); border-left: 1px solid var(--rhodes-cyan); }
+        .bracket-box::after { bottom: 0; right: 0; border-bottom: 1px solid var(--rhodes-cyan); border-right: 1px solid var(--rhodes-cyan); }
+
+        /* Animasi saat Hover: Melebar sedikit */
+        .bracket-box:hover::before { width: 100%; height: 100%; }
+        .bracket-box:hover::after { width: 100%; height: 100%; }
+
+        /* --- 3. SCRAMBLE TEXT STYLE --- */
+        .scramble-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--rhodes-cyan);
+        }
+
+        /* --- HUD SCREEN FRAME (CORNER DECORATIONS) --- */
+        .hud-corner {
+            position: fixed; width: 40px; height: 40px;
+            border: 2px solid var(--rhodes-cyan);
+            z-index: 9998; /* Di bawah loading screen tapi di atas konten */
+            pointer-events: none; /* Agar bisa di-klik tembus */
+            opacity: 0.7;
+        }
+        
+        /* Pojok Kiri Atas */
+        .hud-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+        /* Pojok Kanan Atas */
+        .hud-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+        /* Pojok Kiri Bawah */
+        .hud-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+        /* Pojok Kanan Bawah */
+        .hud-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+        /* Tambahan: Garis Scan Horizontal Tipis (Vignette) */
+        .scan-line {
+            position: fixed; top: 0; left: 0; width: 100%; height: 5px;
+            background: rgba(35, 240, 255, 0.3);
+            opacity: 0.1;
+            animation: scan-screen 5s linear infinite;
+            pointer-events: none; z-index: 9997;
+        }
+        @keyframes scan-screen { 0% { top: -10%; } 100% { top: 110%; } }
+
+        /* --- INTERACTIVE GRID HIGHLIGHT (FLASHLIGHT) --- */
+        .grid-highlight {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; 
+            z-index: -1; /* Di belakang konten, di depan background video/hitam */
+            
+            /* Pola Grid yang sama, tapi lebih terang/jelas */
+            background-image: 
+                linear-gradient(rgba(35, 240, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(35, 240, 255, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            
+            /* Masking: Membuat lubang intip mengikuti posisi mouse */
+            mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 300px);
+            -webkit-mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 300px);
+            
+            /* Efek tambahan: Sedikit glow pada garis grid */
+            filter: drop-shadow(0 0 2px var(--rhodes-cyan));
+        }
+
+        /* --- 3D TILT EFFECT (CLASS UTILITY) --- */
+        .tilt-box {
+            /* Transisi cepat agar gerakan terasa responsif tapi halus */
+            transition: transform 0.1s ease-out; 
+            
+            /* Mengaktifkan ruang 3D */
+            transform-style: preserve-3d;
+            perspective: 1000px; /* Semakin kecil angka, semakin ekstrim efek 3D-nya */
+        }
+        
+        /* Opsional: Tambahkan sedikit kilau saat miring */
+        .tilt-box::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        }
+        .tilt-box:hover::after { opacity: 1; }
+
+        /* --- TILT WRAPPER (GROUPING) --- */
+        .tilt-wrapper {
+            /* Agar wrapper tidak gepeng */
+            display: flex; 
+            flex-direction: column;
+            
+            /* Jarak antara Stats Panel dan Marquee */
+            gap: 20px; 
+            
+            /* Pastikan wrapper ada di tengah */
+            max-width: 1200px;
+            margin: 0 auto;
+            
+            /* Properti 3D standar */
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* --- FIX LINK STYLES (Hapus Garis Bawah Ungu) --- */
+        
+        /* Targetkan tag 'a' yang berfungsi sebagai card, atau tag 'a' di dalam card */
+        a.card,
+        .card a {
+            text-decoration: none !important; /* Menghapus garis bawah */
+            color: inherit !important;        /* Menggunakan warna asli teks/ikon (putih), bukan ungu link */
+            outline: none !important;         /* Menghapus garis outline fokus saat diklik */
+        }
+
+        /* Tambahan: Pastikan ikon di dalamnya juga mereset warnanya */
+        a.card i,
+        .card a i {
+             color: inherit !important;
+        }
+
+        /* --- ENDFIELD INSPIRED REVEALS --- */
+
+/* 1. TEXT MASK REVEAL (Untuk Judul Section) */
+/* Teks awalnya disembunyikan di bawah/luar kotak */
+.mask-reveal {
+    position: relative;
+    overflow: hidden; /* Kunci efek masking */
+    display: inline-block;
+}
+
+.mask-reveal span {
+    display: inline-block;
+    transform: translateY(110%); /* Geser teks ke bawah, keluar dari kotak */
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Gerakan "Snappy" mekanis */
+    opacity: 0;
+}
+
+/* Garis dekorasi Endfield yang lewat saat reveal */
+.mask-reveal::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--rhodes-yellow);
+    transform: translateX(-101%); /* Mulai dari kiri */
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+}
+
+/* State Aktif (Saat di-scroll) */
+.mask-reveal.active::after {
+    animation: swipe-right 0.8s ease-in-out forwards;
+}
+
+.mask-reveal.active span {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: 0.3s; /* Tunggu garis lewat dulu baru teks muncul */
+}
+
+@keyframes swipe-right {
+    0% { transform: translateX(-101%); }
+    50% { transform: translateX(0); } /* Menutup teks */
+    100% { transform: translateX(101%); } /* Pergi ke kanan */
+}
+
+/* 2. STAGGERED GRID REVEAL (Untuk Card Projects/Skills) */
+/* Container tidak perlu animasi, tapi anak-anaknya yang bergerak */
+.stagger-container {
+    opacity: 1; /* Container tetap terlihat */
+}
+
+.stagger-item {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+    /* Efek blur sedikit saat masuk agar terasa sci-fi */
+    filter: blur(5px); 
+    transition: all 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+}
+
+.stagger-item.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+/* --- DECRYPT EFFECT STYLES --- */
+.decrypt-text {
+    font-family: 'JetBrains Mono', monospace;
+    display: inline-block;
+    min-width: 50px; /* Mencegah layout bergeser saat teks berubah */
+}
+
+/* Efek cursor berkedip saat belum selesai (opsional) */
+.decrypt-text.decoding::after {
+    content: "_";
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* --- CERTIFICATES & AWARDS (FOCUSED GLOW) --- */
+.medal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.medal-card {
+    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid var(--rhodes-grey);
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease; /* Transisi standar */
+    
+    /* Bentuk Hexagon Tech */
+    clip-path: polygon(
+        20px 0, 100% 0, 
+        100% calc(100% - 20px), calc(100% - 20px) 100%, 
+        0 100%, 0 20px
+    );
+}
+
+/* Garis Dekorasi Atas */
+.medal-card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: var(--rhodes-grey); 
+    transition: 0.3s ease;
+}
+
+/* Container Ikon (Medal) */
+.medal-icon {
+    width: 65px; height: 65px;
+    border: 1px solid var(--rhodes-grey);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; color: var(--text-muted);
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.medal-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 1.2rem; color: #fff;
+    text-transform: uppercase; margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.medal-issuer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--rhodes-yellow);
+    margin-bottom: 20px;
+}
+
+.medal-date {
+    font-size: 0.7rem; color: var(--text-muted);
+    border-top: 1px solid var(--rhodes-grey);
+    padding-top: 15px; width: 100%;
+}
+
+/* --- HOVER EFFECTS: BORDER & MEDAL ONLY --- */
+
+/* 1. Card Border Menyala */
+.medal-card:hover {
+    border-color: var(--rhodes-cyan); /* Ubah warna border jadi Cyan */
+    box-shadow: 0 0 15px rgba(35, 240, 255, 0.15); /* Glow halus di sekitar kartu */
+    transform: translateY(-3px); /* Naik sedikit agar interaktif */
+}
+
+/* Garis atas juga ikut menyala */
+.medal-card:hover::before { 
+    background: var(--rhodes-cyan);
+    box-shadow: 0 0 8px var(--rhodes-cyan);
+}
+
+/* 2. Medal Icon Menyala (Glow Kuat) */
+.medal-card:hover .medal-icon {      
+    border-color: var(--rhodes-cyan); /* Lingkaran jadi Cyan */
+    background: rgba(35, 240, 255, 0.05); /* Isi sedikit terang */
+}
+
+/* Hapus elemen dekorasi lain agar bersih */
+.medal-card::after { display: none; } /* Hapus badge verified */
+.scan-flash { display: none; } /* Hapus scan flash */
+
+/* --- FIX: HAPUS GARIS BAWAH LINK MEDALI --- */
+
+/* 1. Targetkan elemen <a> dengan class .medal-card */
+a.medal-card {
+    text-decoration: none !important; /* Hapus garis bawah */
+    border: 1px solid var(--rhodes-grey); /* Pastikan border kotak tetap ada */
+    display: flex; /* Kembalikan layout flex */
+    color: inherit; /* Gunakan warna teks asli, jangan ungu */
+}
+
+/* 2. Pastikan saat hover/diklik juga tidak muncul garis */
+a.medal-card:hover,
+a.medal-card:focus,
+a.medal-card:active,
+a.medal-card:visited {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+/* 3. Pastikan semua teks di dalamnya tidak mewarisi garis bawah */
+a.medal-card * {
+    text-decoration: none !important;
+}
+    </style>
+</head>
+<body>
+    <div class="grid-highlight"></div>
+
+    <div class="hud-corner hud-bl"></div>
+    <div class="hud-corner hud-br"></div>
+    <div class="scan-line"></div>
+
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-bar" id="scrollBar">
+            <div class="scroll-coordinate" id="scrollCoord">Y:000</div>
+        </div>
+    </div>
+
+    <div id="boot-screen">
+        <div class="rhodes-logo-load"></div>
+        <div class="loading-text" id="loading-text">INITIALIZING NEURAL CONNECTOR...</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-layer-group"></i> PORTOFOLIO
+        </div>
+        <div class="menu-toggle" id="mobile-menu"><i class="fa-solid fa-bars"></i></div>
+        <div class="nav-links" id="nav-links">
+            <a href="#home" onclick="closeMenu()">// HOME</a>
+            <a href="#skills" onclick="closeMenu()">// DATABASE</a>
+            <a href="#awards" onclick="closeMenu()">// ACHIEVEMENTS</a>
+            <a href="#projects" onclick="closeMenu()">// MISSIONS</a>
+            <a href="#contact" onclick="closeMenu()">// SIGNAL</a>
+        </div>
+    </nav>
+
+    <section id="home" class="hero reveal-on-scroll">
+        
+        <div class="video-wrapper">
+            <video autoplay muted loop playsinline class="bg-video">
+                <source src="https://www.pexels.com/download/video/3129957/" type="video/mp4">
+            </video>
+            
+            <div class="video-overlay"></div>
+        </div>
+        <div class="mono yellow-text" style="margin-bottom: 10px; position: relative; z-index: 2;">> DEPLOYMENT READY</div>
+        <div style="position: relative; z-index: 2;">
+            <h1>
+                OPERATOR <br> 
+                <span class="accent-text scramble-text" data-value="Abin_East">Abin_East</span>
+            </h1>
+        </div>
+        
+        <p class="mono" style="position: relative; z-index: 2;">
+            USERNAME: ABINEAST.<br>
+            SPECIALIZATION: FULLSTACK DEVELOPER / DATA & BACKEND ENTHUSIAST.<br>
+            CURRENT STATUS: INFORMATICS MAJOR STUDENT.
+        </p>
+        
+        <div style="position: relative; z-index: 2;">
+            <a href="#skills" class="btn bracket-box">INITIALIZE PROTOCOL</a>
+        </div>
+
+    </section>
+
+    <section id="skills" class="reveal-on-scroll">
+        <div class="section-header">
+            <h2 class="section-title mask-reveal">
+                <span>OPERATOR_STATS</span> </h2>
+            <span class="section-number rolling-num" data-target="01">00</span>
+        </div>
+        <div class="tilt-wrapper tilt-box">
+            <div class="stats-container">
+                <div class="operator-photo reveal-on-scroll">
+                    <img src="https://i.redd.it/1fd85j0at0f41.jpg" alt="Operator Portrait">
+                </div>
+
+                <div class="stats-info reveal-on-scroll">
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="font-size: 2rem; color: #fff; line-height: 1;">
+                            CODENAME: <span class="decrypt-text yellow-text" data-value="AbinEast"></span>
+                        </h3>
+                        
+                        <p class="mono" style="color: var(--text-muted);">
+                            EXPERIENCE: <span class="decrypt-text yellow-text" data-value="3 YEARS"></span>
+                        </p>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">LOGIC (Code Logic)</span> 
+                        <span class="stat-val decrypt-text" data-value="HIGH"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">CREATIVITY (UI/UX)</span> 
+                        <span class="stat-val decrypt-text" style="color:var(--text-muted)" data-value="STANDARD"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">TACTICAL (AI/IoT)</span> 
+                        <span class="stat-val decrypt-text" style="color:var(--text-muted)" data-value="STANDARD"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">MOBILITY (Speed)</span> 
+                        <span class="stat-val decrypt-text" style="color:var(--text-muted)" data-value="STANDARD"></span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">STRUCTURE (Database)</span> 
+                        <span class="stat-val decrypt-text yellow-text" data-value="HIGH"></span>
+                    </div>
+                </div>
+
+                <div class="radar-chart-container reveal-on-scroll">
+                    <svg width="300" height="300" viewBox="0 0 200 200">
+                        <polygon class="radar-grid" points="100,20 170,60 170,140 100,180 30,140 30,60" />
+                        <polygon class="radar-grid" points="100,50 145,75 145,125 100,150 55,125 55,75" opacity="0.5"/>
+                        <polygon class="radar-grid" points="100,80 120,90 120,110 100,120 80,110 80,90" opacity="0.3"/>
+                        
+                        <line x1="100" y1="100" x2="100" y2="20" stroke="#333" stroke-width="1" />
+                        <line x1="100" y1="100" x2="170" y2="60" stroke="#333" stroke-width="1" />
+                        <line x1="100" y1="100" x2="170" y2="140" stroke="#333" stroke-width="1" />
+                        <line x1="100" y1="100" x2="100" y2="180" stroke="#333" stroke-width="1" />
+                        <line x1="100" y1="100" x2="30" y2="140" stroke="#333" stroke-width="1" />
+                        <line x1="100" y1="100" x2="30" y2="60" stroke="#333" stroke-width="1" />
+
+                        <polygon class="radar-data" points="100,30 135,80 135,120 100,140 45,130 65,80" />
+
+                        <text x="100" y="15" class="radar-label">CODE</text>
+                        <text x="185" y="60" class="radar-label">UI/UX</text>
+                        <text x="185" y="150" class="radar-label">IOT</text>
+                        <text x="100" y="195" class="radar-label">AI</text>
+                        <text x="15" y="150" class="radar-label">DB</text>
+                        <text x="15" y="60" class="radar-label">SPD</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="tech-marquee reveal-on-scroll">
+                <div class="marquee-content">
+                    <div class="tech-item"><i class="fa-brands fa-python"></i> PYTHON</div>
+                    <div class="tech-item"><i class="fa-brands fa-react"></i> FLASK</div>
+                    <div class="tech-item"><i class="fa-brands fa-php"></i> PHP</div>
+                    <div class="tech-item"><i class="fa-brands fa-laravel"></i> LARAVEL</div>
+                    <div class="tech-item"><i class="fa-brands fa-js"></i> JAVASCRIPT</div>
+                    <div class="tech-item"><i class="fa-brands fa-html5"></i> HTML5</div>
+                    <div class="tech-item"><i class="fa-brands fa-css3-alt"></i> CSS3</div>
+                    <div class="tech-item"><i class="fa-brands fa-bootstrap"></i> BOOTSTRAP</div>
+                    <div class="tech-item"><i class="fa-brands fa-react"></i> REACT</div>
+                    <div class="tech-item"><i class="fa-solid fa-database"></i> MYSQL</div>
+                    <div class="tech-item"><i class="fa-brands fa-git-alt"></i> GIT</div>
+                    <div class="tech-item"><i class="fa-brands fa-flutter"></i> FLUTTER</div>
+
+                    <div class="tech-item"><i class="fa-brands fa-python"></i> PYTHON</div>
+                    <div class="tech-item"><i class="fa-brands fa-react"></i> FLASK</div>
+                    <div class="tech-item"><i class="fa-brands fa-php"></i> PHP</div>
+                    <div class="tech-item"><i class="fa-brands fa-laravel"></i> LARAVEL</div>
+                    <div class="tech-item"><i class="fa-brands fa-js"></i> JAVASCRIPT</div>
+                    <div class="tech-item"><i class="fa-brands fa-html5"></i> HTML5</div>
+                    <div class="tech-item"><i class="fa-brands fa-css3-alt"></i> CSS3</div>
+                    <div class="tech-item"><i class="fa-brands fa-bootstrap"></i> BOOTSTRAP</div>
+                    <div class="tech-item"><i class="fa-brands fa-react"></i> REACT</div>
+                    <div class="tech-item"><i class="fa-solid fa-database"></i> MYSQL</div>
+                    <div class="tech-item"><i class="fa-brands fa-git-alt"></i> GIT</div>
+                    <div class="tech-item"><i class="fa-brands fa-flutter"></i> FLUTTER</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tech-stack-grid reveal-on-scroll">
+            <div class="tech-badge" data-name="Python"><i class="fa-brands fa-python"></i></div>
+            <div class="tech-badge" data-name="Flask"><i class="fa-solid fa-flask"></i></div>
+            <div class="tech-badge" data-name="PHP"><i class="fa-brands fa-php"></i></div>
+            <div class="tech-badge" data-name="Laravel"><i class="fa-brands fa-laravel"></i></div>
+            <div class="tech-badge" data-name="JavaScript"><i class="fa-brands fa-js"></i></div>
+            <div class="tech-badge" data-name="React"><i class="fa-brands fa-react"></i></div>
+            <div class="tech-badge" data-name="HTML5"><i class="fa-brands fa-html5"></i></div>
+            <div class="tech-badge" data-name="CSS3"><i class="fa-brands fa-css3-alt"></i></div>
+            <div class="tech-badge" data-name="Bootstrap"><i class="fa-brands fa-bootstrap"></i></div>
+            <div class="tech-badge" data-name="SQL"><i class="fa-solid fa-database"></i></div>
+            <div class="tech-badge" data-name="Git"><i class="fa-brands fa-git-alt"></i></div>
+        </div>
+    </section>
+
+    <section id="awards" class="reveal-on-scroll">
+        <div class="section-header">
+            <h2 class="section-title mask-reveal">
+                <span>CERTIFICATES</span> 
+            </h2>
+            <span class="section-number rolling-num" data-target="02">00</span>
+        </div>
+
+        <div class="medal-grid stagger-container">
+            
+            <a href="https://www.futurelearn.com/certificates/s392udg" target="_blank" class="medal-card tilt-box stagger-item">
+                <div class="medal-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="medal-title">Digital Skills : Artificial Intelligence</div>
+                <div class="medal-issuer">Future Learn</div>
+                <div class="medal-date">ISSUED: 29th January 2022 // CLICK TO VERIFY</div>
+            </a>
+
+            <a href="https://www.futurelearn.com/certificates/pelo8ew" target="_blank" class="medal-card tilt-box stagger-item">
+                <div class="medal-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="medal-title">Digital Skills : Digital Marketing</div>
+                <div class="medal-issuer">Future Learn</div>
+                <div class="medal-date">ISSUED: 22th January 2022  //</div>
+            </a>
+
+            <a href="https://www.futurelearn.com/certificates/pag4d3e" target="_blank" class="medal-card tilt-box stagger-item">
+                <div class="medal-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="medal-title">Digital Skills : Social Media</div>
+                <div class="medal-issuer">Future Learn</div>
+                <div class="medal-date">ISSUED: 19th January 2022  //</div>
+            </a>
+
+            <a href="https://courses.cognitiveclass.ai/certificates/f1f9c4b3d91c4f928cc5858f48f2a311" target="_blank" class="medal-card tilt-box stagger-item">
+                <div class="medal-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="medal-title">Data Analysis with Python</div>
+                <div class="medal-issuer">Cognitive Class</div>
+                <div class="medal-date">ISSUED: December 26, 2025 // </div>
+            </a>
+
+            <a href="https://aws.amazon.com/verification" target="_blank" class="medal-card tilt-box stagger-item">
+                <div class="medal-icon">
+                   <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="medal-title">Cloud Practitioner</div>
+                <div class="medal-issuer">AWS CERTIFIED</div>
+                <div class="medal-date">ISSUED: November 16, 2023 // ID: AWS-0099</div>
+            </a>
+
+        </div>
+    </section>
+
+    <section id="projects" class="reveal-on-scroll">
+        <div class="section-header">
+            <h2 class="section-title mask-reveal">
+                <span>OPERATION_LOG</span> </h2>
+            <span class="section-number rolling-num" data-target="03">00</span>
+        </div>
+        
+        <div class="grid reveal-on-scroll">
+            <div class="card">
+                <a href="https://github.com/AbinEast/Perfume-Shop-Web-JS">
+                    <div class="project-image">
+                        <i class="fa-solid fa-gem" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>Perfume.exe</h3>
+                    <p>E-commerce platform deployment. High-end visual hierarchy.</p>
+                    <div class="tags"><span class="tag">WEB</span><span class="tag">COMMERCE</span></div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="https://github.com/AbinEast/Water-Quality-Check-Web">
+                    <div class="project-image">
+                        <i class="fa-solid fa-water" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>Water_Monitor_Sys</h3>
+                    <p>Research Project: turbidity and pH analysis.</p>
+                    <div class="tags"><span class="tag">WEB</span><span class="tag">RESEARCH</span></div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="https://github.com/AbinEast/AnimChatbot">
+                    <div class="project-image">
+                        <i class="fa-solid fa-comment-dots" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>Live2D_Chatbot</h3>
+                    <p>AI Assistant prototype featuring voice synthesis.</p>
+                    <div class="tags"><span class="tag">AI</span><span class="tag">PYTHON</span></div>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="https://github.com/AbinEast/Social-Media-App-With-Flutter-and-Laravel-Back-End">
+                    <div class="project-image">
+                        <i class="fa-solid fa-comments" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>Social_Media_App</h3>
+                    <p>Social media app made using Flutter and Laravel.</p>
+                    <div class="tags"><span class="tag">FLUTTER</span><span class="tag">LARAVEL</span></div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="https://github.com/AbinEast/Flutter-Messager-App">
+                    <div class="project-image">
+                        <i class="fa-solid fa-envelope" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>Messenger_App</h3>
+                    <p>Research Project: mobile application that simulates a chat interface.</p>
+                    <div class="tags"><span class="tag">FLUTTER</span><span class="tag">MESSENGER</span></div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="https://github.com/AbinEast/Flutter-News-Application">
+                    <div class="project-image">
+                        <i class="fa-solid fa-newspaper" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>News_App</h3>
+                    <p>News app featuring a list of news articles, a news page, and a media profile page.</p>
+                    <div class="tags"><span class="tag">FLUTTER</span><span class="tag">NEWS</span></div>
+                </a>
+            </div>
+
+            <div class="card">
+                <a href="https://github.com/AbinEast/etrain-app-laravel">
+                    <div class="project-image">
+                        <i class="fa-solid fa-train-subway" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>E-Train_App</h3>
+                    <p>Featuring Real time ticket order and tracking</p>
+                    <div class="tags"><span class="tag">LARAVEL</span></div>
+                </a>
+            </div>
+            
+            <div class="card">
+                <a href="https://github.com/AbinEast/MyAnimeList-MAL-Scraper">
+                    <div class="project-image">
+                        <i class="fa-solid fa-toolbox" style="font-size:3rem; color:#fff;"></i>
+                    </div>
+                    <h3>MAL_Web_Scraper</h3>
+                    <p>A tool designed to extract datasets from MyAnimeList efficiently.</p>
+                    <div class="tags"><span class="tag">PYTHON</span></div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="reveal-on-scroll">
+        <div class="section-header">
+            <h2 class="section-title mask-reveal">
+                <span>COMM_CHANNEL</span> </h2>
+            <span class="section-number rolling-num" data-target="04">00</span>
+        </div>
+
+        <div style="text-align: center; border: 1px dashed var(--rhodes-grey); padding: 50px; background: rgba(0,0,0,0.5);">
+            <p class="mono" style="margin-bottom: 20px;"> TRANSMISSION OPEN. WAITING FOR INPUT.</p>
+            <p style="color: var(--text-muted); margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                Available for freelance contracts and research collaboration. Secure line is open.
+            </p>
+            <a href="mailto:laodemuhammad177@gmail.com" class="btn">SEND PACKET</a>
+            
+            <div class="social-links">
+                <a href="https://github.com/AbinEast" class="social-btn"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>RHODES ISLAND TERMINAL v2.5.5 // &copy; 2025 AbinEast</p>
+    </footer>
+
+    <script>
+
+        // --- INTERACTIVE GRID TRACKING ---
+        const gridHighlight = document.querySelector('.grid-highlight');
+        
+        document.addEventListener('mousemove', (e) => {
+            // Mengirim koordinat X dan Y mouse ke variabel CSS
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            gridHighlight.style.setProperty('--mouse-x', x + 'px');
+            gridHighlight.style.setProperty('--mouse-y', y + 'px');
+        });
+
+        // Mobile Menu Logic
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileMenu.querySelector('i');
+            navLinks.classList.contains('active') ? icon.classList.replace('fa-bars', 'fa-xmark') : icon.classList.replace('fa-xmark', 'fa-bars');
+        });
+        function closeMenu() { navLinks.classList.remove('active'); mobileMenu.querySelector('i').classList.replace('fa-xmark', 'fa-bars'); }
+
+        // BOOT SEQUENCE LOGIC
+        document.addEventListener("DOMContentLoaded", function() {
+            const loadingText = document.getElementById('loading-text');
+            const progressFill = document.getElementById('progress-fill');
+            const bootScreen = document.getElementById('boot-screen');
+            
+            // Teks terminal yang akan muncul bergantian
+            const logs = [
+                "ESTABLISHING CONNECTION...",
+                "SYNCING NEURAL CLOUD...",
+                "LOADING ASSETS...",
+                "PRTS SYSTEM: ONLINE."
+            ];
+
+            let step = 0;
+            
+            // Interval untuk animasi loading bar dan teks
+            const interval = setInterval(() => {
+                if(step < logs.length) {
+                    loadingText.innerText = logs[step];
+                    // Update lebar bar (25% per step karena ada 4 logs)
+                    progressFill.style.width = ((step + 1) * 25) + "%";
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    // Setelah selesai, hilangkan layar loading
+                    setTimeout(() => {
+                        bootScreen.style.opacity = "0"; // Fade out
+                        bootScreen.style.transition = "opacity 0.5s";
+                        setTimeout(() => {
+                            bootScreen.style.display = "none"; // Hapus elemen
+                        }, 500);
+                    }, 500);
+                }
+            }, 600); // Kecepatan ganti teks (600ms)
+        });
+
+        // --- ENDFIELD STYLE STAGGERED REVEAL ENGINE ---
+
+        // 1. Observer untuk Text Masking (Judul)
+        const maskObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 }); // Muncul saat 50% terlihat
+
+        document.querySelectorAll('.mask-reveal').forEach(el => maskObserver.observe(el));
+
+
+        // 2. Observer untuk Grid Items (Kartu Proyek & Skill)
+        const staggerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Saat container terlihat, kita ambil anak-anaknya
+                    const container = entry.target;
+                    const items = container.querySelectorAll('.stagger-item');
+                    
+                    items.forEach((item, index) => {
+                        // Set delay berdasarkan urutan index (0.1s, 0.2s, 0.3s, dst)
+                        // Ini menciptakan efek gelombang/berurutan
+                        setTimeout(() => {
+                            item.classList.add('active');
+                        }, index * 100); // 100ms delay per item
+                    });
+
+                    // Stop observe setelah animasi jalan sekali (opsional)
+                    staggerObserver.unobserve(container);
+                }
+            });
+        }, { threshold: 0.1 }); // Muncul saat 10% container masuk layar
+
+        // Targetkan containernya, bukan itemnya langsung
+        document.querySelectorAll('.stagger-container').forEach(el => staggerObserver.observe(el));
+
+        // --- PERTAHANKAN OBSERVER LAMA UNTUK ELEMEN LAIN ---
+        // Jika ada elemen sisa yang masih pakai class 'reveal-on-scroll' biasa
+        const simpleObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        });
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => simpleObserver.observe(el));
+
+                /* --- AUTO LOOP SCRAMBLE DECODER EFFECT --- */
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#@$%"; 
+
+        // Fungsi reusable untuk menjalankan animasi pada elemen target
+        function runScrambleAnimation(target) {
+            let iterations = 0;
+            const value = target.dataset.value;
+            
+            // Safety: Hentikan interval animasi sebelumnya di elemen ini jika sedang berjalan
+            // agar tidak terjadi tabrakan animasi (huruf berkedip aneh)
+            if (target.scrambleInterval) clearInterval(target.scrambleInterval);
+
+            target.scrambleInterval = setInterval(() => {
+                target.innerText = value.split("")
+                    .map((letter, index) => {
+                        // Jika index huruf sudah "terpecahkan", tampilkan huruf asli
+                        if(index < iterations) {
+                            return value[index];
+                        }
+                        // Sisanya acak
+                        return letters[Math.floor(Math.random() * letters.length)];
+                    })
+                    .join("");
+
+                // Hentikan jika sudah selesai semua huruf
+                if(iterations >= value.length) { 
+                    clearInterval(target.scrambleInterval);
+                }
+                
+                iterations += 1 / 5; // Kecepatan dekripsi
+            }, 30); 
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.querySelector(".scramble-text");
+            
+            if (target) {
+                // 1. Jalankan sekali saat halaman selesai dimuat
+                runScrambleAnimation(target);
+
+                // 2. Jalankan saat mouse hover (Interaktif)
+                target.onmouseover = () => runScrambleAnimation(target);
+
+                // 3. Jalankan Loop Otomatis
+                // Catatan: Animasi 'FULLSTACK_DEV' butuh waktu sekitar 1.2 detik.
+                // Kita set interval 3200ms (3.2 detik) agar ada jeda diam sekitar 2 detik sebelum mulai lagi.
+                // Jika diset pas 2000ms, teksnya akan hampir tidak pernah diam/terbaca.
+                setInterval(() => {
+                    runScrambleAnimation(target);
+                }, 5200); 
+            }
+        });
+
+    // --- ROLLING NUMBERS ANIMATION ---
+        const counters = document.querySelectorAll('.rolling-num');
+        
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    const el = entry.target;
+                    const targetStr = el.getAttribute('data-target');
+                    const target = parseInt(targetStr);
+                    
+                    // Cek apakah angka aslinya pakai nol di depan (misal: "01")
+                    const isPad = targetStr.startsWith('0') && targetStr.length > 1;
+                    
+                    let count = 0;
+                    const duration = 1500; // Durasi animasi (ms)
+                    const frameRate = 30; // Kecepatan update (ms)
+                    const totalFrames = duration / frameRate;
+                    const increment = target / totalFrames; 
+                    
+                    const timer = setInterval(() => {
+                        count += increment;
+                        
+                        if(count >= target) {
+                            count = target;
+                            clearInterval(timer);
+                        }
+                        
+                        // Format angka: Bulatkan ke bawah
+                        let displayNum = Math.floor(count);
+                        
+                        // Jika perlu padding nol (misal 1 jadi 01)
+                        if (isPad) {
+                            displayNum = displayNum.toString().padStart(2, '0');
+                        }
+                        
+                        el.innerText = displayNum;
+                    }, frameRate);
+                    
+                    counterObserver.unobserve(el); // Hentikan observasi setelah animasi jalan
+                }
+            });
+        }, { threshold: 0.5 }); // Mulai animasi saat elemen 50% terlihat
+
+        counters.forEach(c => counterObserver.observe(c));
+
+        // --- 3D TILT EFFECT LOGIC (UPDATED: MULTI-ELEMENT SUPPORT) ---
+        // Menggunakan querySelectorAll untuk mengambil SEMUA elemen dengan class .tilt-box
+        const tiltElements = document.querySelectorAll('.tilt-box');
+        
+        tiltElements.forEach(tiltElement => {
+            tiltElement.addEventListener('mousemove', (e) => {
+                const rect = tiltElement.getBoundingClientRect();
+                
+                // Hitung posisi mouse relatif terhadap tengah elemen tersebut
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                // Logika: Sisi yang disorot akan naik/maju
+                const divider = 15; 
+                
+                const rotateX = y / 90;  
+                const rotateY = -x / 90; 
+                
+                tiltElement.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            // Reset saat mouse keluar
+            tiltElement.addEventListener('mouseleave', () => {
+                tiltElement.style.transition = 'transform 0.5s ease';
+                tiltElement.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                
+                setTimeout(() => { tiltElement.style.transition = ''; }, 500);
+            });
+            
+            // Hapus transisi saat masuk agar responsif
+            tiltElement.addEventListener('mouseenter', () => {
+                tiltElement.style.transition = 'none';
+            });
+        });
+
+        // --- COOL DECRYPT EFFECT FOR STATS ---
+
+        // Karakter acak untuk efek "hacker"
+        const decryptChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#@%&";
+
+        function runDecryptEffect(element) {
+            const originalText = element.getAttribute('data-value');
+            let iterations = 0;
+            
+            // Tambahkan class decoding untuk style cursor (opsional)
+            element.classList.add('decoding');
+
+            const interval = setInterval(() => {
+                element.innerText = originalText.split("")
+                    .map((letter, index) => {
+                        // Jika index huruf sudah "terpecahkan", tampilkan huruf asli
+                        if(index < iterations) {
+                            return originalText[index];
+                        }
+                        // Jika spasi, biarkan spasi
+                        if(originalText[index] === ' ') return ' ';
+                        // Sisanya tampilkan karakter acak
+                        return decryptChars[Math.floor(Math.random() * decryptChars.length)];
+                    })
+                    .join("");
+
+                // Hentikan jika iterasi sudah melebihi panjang teks
+                if(iterations >= originalText.length) { 
+                    clearInterval(interval);
+                    element.innerText = originalText; // Pastikan hasil akhir bersih
+                    element.classList.remove('decoding');
+                }
+                
+                // Kecepatan penyelesaian per huruf
+                iterations += 1 / 2; 
+            }, 40); // Kecepatan frame (ms)
+        }
+
+        // Observer khusus untuk memicu efek saat stats terlihat
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const container = entry.target;
+                    const targets = container.querySelectorAll('.decrypt-text');
+                    
+                    // Jalankan efek satu per satu (Staggered)
+                    targets.forEach((el, index) => {
+                        setTimeout(() => {
+                            runDecryptEffect(el);
+                        }, index * 300); // Jeda 300ms antar baris agar terlihat seperti loading sistem
+                    });
+
+                    // Stop observe agar tidak berulang terus menerus
+                    statsObserver.unobserve(container);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Targetkan container stats-info
+        const statsInfoContainer = document.querySelector('.stats-info');
+        if(statsInfoContainer) {
+            statsObserver.observe(statsInfoContainer);
+        }
+    </script>
+</body>
+</html>
