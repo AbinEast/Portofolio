@@ -220,42 +220,6 @@
         .btn:hover { color: #000; }
         .btn:hover::before { left: 0; }
 
-        /* --- TECH MARQUEE (CONTAINED VERSION) --- */
-        .tech-marquee {
-            width: 100%; 
-            margin: 0 auto;    /* Posisi Tengah */
-            
-            background: var(--rhodes-cyan); 
-            color: #000; 
-            padding: 10px 0;
-            
-            font-family: 'JetBrains Mono'; 
-            font-weight: 700; 
-            text-transform: uppercase;
-            
-            overflow: hidden; 
-            position: relative;
-        }
-
-        /* Blur effect di kiri/kanan agar teks terlihat muncul/hilang halus di batas container */
-        .tech-marquee::before, .tech-marquee::after {
-            content: ""; position: absolute; top: 0; width: 50px; height: 100%; z-index: 2;
-            pointer-events: none;
-        }
-        .tech-marquee::before { 
-            left: 0; 
-            background: linear-gradient(to right, var(--rhodes-cyan), transparent); 
-        }
-        .tech-marquee::after { 
-            right: 0; 
-            background: linear-gradient(to left, var(--rhodes-cyan), transparent); 
-        }
-
-        .marquee-content { display: flex; animation: scroll 30s linear infinite; }
-        .tech-item { margin: 0 30px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-        
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
         /* --- OPERATOR PHOTO STYLES --- */
         .operator-photo {
             width: 180px; height: 260px; /* Ukuran pas foto */
@@ -371,6 +335,42 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* --- TECH MARQUEE (CONTAINED VERSION) --- */
+        .tech-marquee {
+            width: 100%; 
+            margin: 0 auto;    /* Posisi Tengah */
+            
+            background: var(--rhodes-cyan); 
+            color: #000; 
+            padding: 10px 0;
+            
+            font-family: 'JetBrains Mono'; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* Blur effect di kiri/kanan agar teks terlihat muncul/hilang halus di batas container */
+        .tech-marquee::before, .tech-marquee::after {
+            content: ""; position: absolute; top: 0; width: 50px; height: 100%; z-index: 2;
+            pointer-events: none;
+        }
+        .tech-marquee::before { 
+            left: 0; 
+            background: linear-gradient(to right, var(--rhodes-cyan), transparent); 
+        }
+        .tech-marquee::after { 
+            right: 0; 
+            background: linear-gradient(to left, var(--rhodes-cyan), transparent); 
+        }
+
+        .marquee-content { display: flex; animation: scroll 30s linear infinite; }
+        .tech-item { margin: 0 30px; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
         /* --- TECH STACK GRID (FULL WIDTH) --- */
         .tech-stack-grid {
             display: grid;
@@ -389,32 +389,93 @@
             background: rgba(20, 20, 20, 0.6);
             border: 1px solid var(--rhodes-grey);
             padding: 15px 10px;
-            border-radius: 4px;
+            border-radius: 4px; /* Kita pakai sudut melengkung biasa sebagai pengganti */
             display: flex; align-items: center; justify-content: center;
             color: var(--text-muted);
             font-size: 1.5rem; 
             transition: 0.3s;
+            
+            /* PENTING: Tambahkan 2 baris ini agar Tooltip bisa keluar dari kotak */
             position: relative;
-            /* Potongan sudut taktis */
-            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+            overflow: visible !important; 
+            
+            /* NONAKTIFKAN clip-path (potongan sudut) agar tidak memotong teks */
+            clip-path: none !important; 
+        }
+
+        /* Tooltip Box (Kotak Nama) */
+        .tech-badge::after {
+            content: attr(data-name); /* Mengambil teks dari atribut data-name di HTML */
+            
+            position: absolute;
+            bottom: 100%; /* Muncul di atas elemen */
+            left: 50%;
+            
+            /* Styling Visual */
+            background: var(--rhodes-yellow); 
+            color: #000;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            white-space: nowrap; /* Mencegah teks turun baris */
+            
+            /* State Awal: Tersembunyi, sedikit turun, dan kecil */
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px) scale(0.8);
+            pointer-events: none; /* Agar tidak mengganggu kursor */
+            z-index: 20;
+            
+            /* Animasi */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            
+            /* Dekorasi Shadow */
+            box-shadow: 0 0 10px rgba(215, 252, 44, 0.5);
+            
+            /* Sudut Tumpul tech style */
+            clip-path: polygon(5px 0, 100% 0, 100% 100%, 0 100%, 0 5px);
+        }
+
+        .tech-badge::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            border: 6px solid transparent;
+            border-top-color: var(--rhodes-yellow); /* Warna panah */
+            
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 19;
         }
         
         .tech-badge:hover::after {
             content: attr(data-name);
-            position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%);
+            position: absolute; bottom: 110%; left: 50%;
             background: var(--rhodes-yellow); color: #000;
             padding: 4px 8px; font-size: 0.8rem; font-family: 'JetBrains Mono'; font-weight: bold;
             white-space: nowrap; pointer-events: none;
             box-shadow: 0 0 10px var(--rhodes-yellow);
             z-index: 20;
+            opacity: 1;
+            /* Geser ke atas (-15px) agar tidak nempel ikon */
+            transform: translateX(-50%) translateY(-15px) scale(1);
         }
+
         .tech-badge:hover {
             border-color: var(--rhodes-cyan);
             color: var(--rhodes-cyan);
             background: rgba(35, 240, 255, 0.1);
             transform: translateY(-5px); 
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            z-index: 10;
+            z-index: 100; /* Pastikan z-index tinggi saat hover */
+        }
+
+        .tech-badge:hover::before {
+            opacity: 1;
+            /* Geser panah tepat di bawah kotak nama */
+            transform: translateX(-50%) translateY(-5px); 
         }
 
         /* --- SECTIONS --- */
@@ -1400,7 +1461,7 @@
                 <div class="project-image">
                     <i class="fa-solid fa-toolbox" style="font-size:3rem; color:#fff;"></i>
                 </div>
-                <h3>MAL_Web_Scrape</h3>
+                <h3>MAL_Web_Scraper</h3>
                 <p>A tool designed to extract datasets from MyAnimeList efficiently.</p>
                 <div class="tags"><span class="tag">PYTHON</span></div>
             </div>
