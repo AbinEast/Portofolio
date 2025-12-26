@@ -502,16 +502,20 @@
 
         /* --- 1. ENDFIELD INDUSTRIAL STRIPES (HAZARD PATTERN) --- */
         .hazard-bar {
-            height: 8px; width: 100px;
-            background: repeating-linear-gradient(
-                45deg,
-                var(--rhodes-yellow),
-                var(--rhodes-yellow) 10px,
-                #000 10px,
-                #000 20px
-            );
-            margin-top: 10px;
-            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+            width: 100%;
+            /* Ubah height sesuai selera. 3px - 5px terlihat bagus untuk garis solid */
+            height: 2px; 
+            
+            /* Hapus background-image gradient yang lama */
+            background-image: none; 
+            
+            /* Ganti dengan warna solid kuning tema */
+            background-color: var(--rhodes-yellow); 
+            
+            /* Opsional: Membuat ujung garis sedikit membulat */
+            border-radius: 2px; 
+            
+            margin: 15px 0; /* Jarak atas bawah */
         }
 
         /* Update Section Header agar lebih Industrial */
@@ -801,199 +805,290 @@
 
         /* --- ENDFIELD INSPIRED REVEALS --- */
 
-/* 1. TEXT MASK REVEAL (Untuk Judul Section) */
-/* Teks awalnya disembunyikan di bawah/luar kotak */
-.mask-reveal {
-    position: relative;
-    overflow: hidden; /* Kunci efek masking */
-    display: inline-block;
-}
+        /* 1. TEXT MASK REVEAL (Untuk Judul Section) */
+        /* Teks awalnya disembunyikan di bawah/luar kotak */
+        .mask-reveal {
+            position: relative;
+            overflow: hidden; /* Kunci efek masking */
+            display: inline-block;
+        }
 
-.mask-reveal span {
-    display: inline-block;
-    transform: translateY(110%); /* Geser teks ke bawah, keluar dari kotak */
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Gerakan "Snappy" mekanis */
-    opacity: 0;
-}
+        .mask-reveal span {
+            display: inline-block;
+            transform: translateY(110%); /* Geser teks ke bawah, keluar dari kotak */
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Gerakan "Snappy" mekanis */
+            opacity: 0;
+        }
 
-/* Garis dekorasi Endfield yang lewat saat reveal */
-.mask-reveal::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--rhodes-yellow);
-    transform: translateX(-101%); /* Mulai dari kiri */
-    z-index: 2;
-    transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
-}
+        /* Garis dekorasi Endfield yang lewat saat reveal */
+        .mask-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--rhodes-yellow);
+            transform: translateX(-101%); /* Mulai dari kiri */
+            z-index: 2;
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
 
-/* State Aktif (Saat di-scroll) */
-.mask-reveal.active::after {
-    animation: swipe-right 0.8s ease-in-out forwards;
-}
+        /* State Aktif (Saat di-scroll) */
+        .mask-reveal.active::after {
+            animation: swipe-right 0.8s ease-in-out forwards;
+        }
 
-.mask-reveal.active span {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0.3s; /* Tunggu garis lewat dulu baru teks muncul */
-}
+        .mask-reveal.active span {
+            transform: translateY(0);
+            opacity: 1;
+            transition-delay: 0.3s; /* Tunggu garis lewat dulu baru teks muncul */
+        }
 
-@keyframes swipe-right {
-    0% { transform: translateX(-101%); }
-    50% { transform: translateX(0); } /* Menutup teks */
-    100% { transform: translateX(101%); } /* Pergi ke kanan */
-}
+        @keyframes swipe-right {
+            0% { transform: translateX(-101%); }
+            50% { transform: translateX(0); } /* Menutup teks */
+            100% { transform: translateX(101%); } /* Pergi ke kanan */
+        }
 
-/* 2. STAGGERED GRID REVEAL (Untuk Card Projects/Skills) */
-/* Container tidak perlu animasi, tapi anak-anaknya yang bergerak */
-.stagger-container {
-    opacity: 1; /* Container tetap terlihat */
-}
+        /* 2. STAGGERED GRID REVEAL (Untuk Card Projects/Skills) */
+        /* Container tidak perlu animasi, tapi anak-anaknya yang bergerak */
+        .stagger-container {
+            opacity: 1; /* Container tetap terlihat */
+        }
 
-.stagger-item {
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-    /* Efek blur sedikit saat masuk agar terasa sci-fi */
-    filter: blur(5px); 
-    transition: all 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-}
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            /* Efek blur sedikit saat masuk agar terasa sci-fi */
+            filter: blur(5px); 
+            transition: all 0.6s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
 
-.stagger-item.active {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-}
+        .stagger-item.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
 
-/* --- DECRYPT EFFECT STYLES --- */
-.decrypt-text {
-    font-family: 'JetBrains Mono', monospace;
-    display: inline-block;
-    min-width: 50px; /* Mencegah layout bergeser saat teks berubah */
-}
+        /* --- DECRYPT EFFECT STYLES --- */
+        .decrypt-text {
+            font-family: 'JetBrains Mono', monospace;
+            display: inline-block;
+            min-width: 50px; /* Mencegah layout bergeser saat teks berubah */
+        }
 
-/* Efek cursor berkedip saat belum selesai (opsional) */
-.decrypt-text.decoding::after {
-    content: "_";
-    animation: blink 0.5s infinite;
-}
+        /* Efek cursor berkedip saat belum selesai (opsional) */
+        .decrypt-text.decoding::after {
+            content: "_";
+            animation: blink 0.5s infinite;
+        }
 
-@keyframes blink { 50% { opacity: 0; } }
+        @keyframes blink { 50% { opacity: 0; } }
 
-/* --- CERTIFICATES & AWARDS (FOCUSED GLOW) --- */
-.medal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
+        /* --- CERTIFICATES & AWARDS (FOCUSED GLOW) --- */
+        .medal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
 
-.medal-card {
-    background: rgba(20, 20, 20, 0.6);
-    border: 1px solid var(--rhodes-grey);
-    padding: 25px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    transition: all 0.3s ease; /* Transisi standar */
-    
-    /* Bentuk Hexagon Tech */
-    clip-path: polygon(
-        20px 0, 100% 0, 
-        100% calc(100% - 20px), calc(100% - 20px) 100%, 
-        0 100%, 0 20px
-    );
-}
+        .medal-card {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid var(--rhodes-grey);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease; /* Transisi standar */
+            
+            /* Bentuk Hexagon Tech */
+            clip-path: polygon(
+                20px 0, 100% 0, 
+                100% calc(100% - 20px), calc(100% - 20px) 100%, 
+                0 100%, 0 20px
+            );
+        }
 
-/* Garis Dekorasi Atas */
-.medal-card::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-    background: var(--rhodes-grey); 
-    transition: 0.3s ease;
-}
+        /* Garis Dekorasi Atas */
+        .medal-card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: var(--rhodes-grey); 
+            transition: 0.3s ease;
+        }
 
-/* Container Ikon (Medal) */
-.medal-icon {
-    width: 65px; height: 65px;
-    border: 1px solid var(--rhodes-grey);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem; color: var(--text-muted);
-    margin-bottom: 20px;
-    background: rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-}
+        /* Container Ikon (Medal) */
+        .medal-icon {
+            width: 65px; height: 65px;
+            border: 1px solid var(--rhodes-grey);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; color: var(--text-muted);
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
 
-.medal-title {
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 1.2rem; color: #fff;
-    text-transform: uppercase; margin-bottom: 5px;
-    letter-spacing: 1px;
-}
+        .medal-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700; font-size: 1.2rem; color: #fff;
+            text-transform: uppercase; margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
 
-.medal-issuer {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem; color: var(--rhodes-yellow);
-    margin-bottom: 20px;
-}
+        .medal-issuer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem; color: var(--rhodes-yellow);
+            margin-bottom: 20px;
+        }
 
-.medal-date {
-    font-size: 0.7rem; color: var(--text-muted);
-    border-top: 1px solid var(--rhodes-grey);
-    padding-top: 15px; width: 100%;
-}
+        .medal-date {
+            font-size: 0.7rem; color: var(--text-muted);
+            border-top: 1px solid var(--rhodes-grey);
+            padding-top: 15px; width: 100%;
+        }
 
-/* --- HOVER EFFECTS: BORDER & MEDAL ONLY --- */
+        /* --- HOVER EFFECTS: BORDER & MEDAL ONLY --- */
 
-/* 1. Card Border Menyala */
-.medal-card:hover {
-    border-color: var(--rhodes-cyan); /* Ubah warna border jadi Cyan */
-    box-shadow: 0 0 15px rgba(35, 240, 255, 0.15); /* Glow halus di sekitar kartu */
-    transform: translateY(-3px); /* Naik sedikit agar interaktif */
-}
+        /* 1. Card Border Menyala */
+        .medal-card:hover {
+            border-color: var(--rhodes-cyan); /* Ubah warna border jadi Cyan */
+            box-shadow: 0 0 15px rgba(35, 240, 255, 0.15); /* Glow halus di sekitar kartu */
+            transform: translateY(-3px); /* Naik sedikit agar interaktif */
+        }
 
-/* Garis atas juga ikut menyala */
-.medal-card:hover::before { 
-    background: var(--rhodes-cyan);
-    box-shadow: 0 0 8px var(--rhodes-cyan);
-}
+        /* Garis atas juga ikut menyala */
+        .medal-card:hover::before { 
+            background: var(--rhodes-cyan);
+            box-shadow: 0 0 8px var(--rhodes-cyan);
+        }
 
-/* 2. Medal Icon Menyala (Glow Kuat) */
-.medal-card:hover .medal-icon {      
-    border-color: var(--rhodes-cyan); /* Lingkaran jadi Cyan */
-    background: rgba(35, 240, 255, 0.05); /* Isi sedikit terang */
-}
+        /* 2. Medal Icon Menyala (Glow Kuat) */
+        .medal-card:hover .medal-icon {      
+            border-color: var(--rhodes-cyan); /* Lingkaran jadi Cyan */
+            background: rgba(35, 240, 255, 0.05); /* Isi sedikit terang */
+        }
 
-/* Hapus elemen dekorasi lain agar bersih */
-.medal-card::after { display: none; } /* Hapus badge verified */
-.scan-flash { display: none; } /* Hapus scan flash */
+        /* Hapus elemen dekorasi lain agar bersih */
+        .medal-card::after { display: none; } /* Hapus badge verified */
+        .scan-flash { display: none; } /* Hapus scan flash */
 
-/* --- FIX: HAPUS GARIS BAWAH LINK MEDALI --- */
+        /* --- FIX: HAPUS GARIS BAWAH LINK MEDALI --- */
 
-/* 1. Targetkan elemen <a> dengan class .medal-card */
-a.medal-card {
-    text-decoration: none !important; /* Hapus garis bawah */
-    border: 1px solid var(--rhodes-grey); /* Pastikan border kotak tetap ada */
-    display: flex; /* Kembalikan layout flex */
-    color: inherit; /* Gunakan warna teks asli, jangan ungu */
-}
+        /* 1. Targetkan elemen <a> dengan class .medal-card */
+        a.medal-card {
+            text-decoration: none !important; /* Hapus garis bawah */
+            border: 1px solid var(--rhodes-grey); /* Pastikan border kotak tetap ada */
+            display: flex; /* Kembalikan layout flex */
+            color: inherit; /* Gunakan warna teks asli, jangan ungu */
+        }
 
-/* 2. Pastikan saat hover/diklik juga tidak muncul garis */
-a.medal-card:hover,
-a.medal-card:focus,
-a.medal-card:active,
-a.medal-card:visited {
-    text-decoration: none !important;
-    color: inherit;
-}
+        /* 2. Pastikan saat hover/diklik juga tidak muncul garis */
+        a.medal-card:hover,
+        a.medal-card:focus,
+        a.medal-card:active,
+        a.medal-card:visited {
+            text-decoration: none !important;
+            color: inherit;
+        }
 
-/* 3. Pastikan semua teks di dalamnya tidak mewarisi garis bawah */
-a.medal-card * {
-    text-decoration: none !important;
-}
+        /* 3. Pastikan semua teks di dalamnya tidak mewarisi garis bawah */
+        a.medal-card * {
+            text-decoration: none !important;
+        }
+
+        /* --- PROJECT MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; /* Hidden by default */
+            transition: 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+
+        .modal-window {
+            width: 90%; max-width: 900px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid var(--rhodes-grey);
+            position: relative;
+            transform: scale(0.8) translateY(50px);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Clip Path Hexagon-ish */
+            clip-path: polygon(
+                20px 0, 100% 0, 
+                100% calc(100% - 20px), calc(100% - 20px) 100%, 
+                0 100%, 0 20px
+            );
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-overlay.active .modal-window {
+            transform: scale(1) translateY(0);
+            border-color: var(--rhodes-cyan);
+            box-shadow: 0 0 30px rgba(35, 240, 255, 0.1);
+        }
+
+        .modal-content {
+            display: flex; flex-wrap: wrap;
+            padding: 40px; gap: 30px;
+        }
+
+        .close-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: transparent; border: none; color: var(--rhodes-cyan);
+            font-size: 2rem; cursor: pointer; z-index: 10;
+            transition: 0.3s;
+        }
+        .close-btn:hover { color: var(--rhodes-yellow); transform: rotate(90deg); }
+
+        /* --- IMAGE & CONTENT --- */
+        .modal-image-container {
+            flex: 1; min-width: 300px;
+            border: 1px solid var(--rhodes-grey);
+            position: relative; overflow: hidden;
+            height: 300px; background: #000;
+        }
+
+        #modal-img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .modal-info {
+            flex: 1; min-width: 300px;
+        }
+
+        .modal-info h4 {
+            margin-bottom: 15px !important; /* Memberi jarak ke bawah */
+        }
+
+        .modal-info h4:nth-of-type(2) {
+            margin-top: 30px !important;
+        }
+
+        #modal-desc {
+            color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;
+            margin-bottom: 10px;
+            border-left: 2px solid var(--rhodes-grey); padding-left: 15px;
+        }
+
+        .modal-actions {
+            display: flex; gap: 15px; margin-top: 30px;
+        }
+
+        /* Responsif untuk Mobile */
+        @media (max-width: 768px) {
+            .modal-content { padding: 20px; flex-direction: column; }
+            .modal-image-container { height: 200px; }
+        }
     </style>
 </head>
+
 <body>
     <div class="grid-highlight"></div>
 
@@ -1197,7 +1292,7 @@ a.medal-card * {
                 </div>
                 <div class="medal-title">Digital Skills : Digital Marketing</div>
                 <div class="medal-issuer">Future Learn</div>
-                <div class="medal-date">ISSUED: 22th January 2022  //</div>
+                <div class="medal-date">ISSUED: 22th January 2022</div>
             </a>
 
             <a href="https://www.futurelearn.com/certificates/pag4d3e" target="_blank" class="medal-card tilt-box stagger-item">
@@ -1206,7 +1301,7 @@ a.medal-card * {
                 </div>
                 <div class="medal-title">Digital Skills : Social Media</div>
                 <div class="medal-issuer">Future Learn</div>
-                <div class="medal-date">ISSUED: 19th January 2022  //</div>
+                <div class="medal-date">ISSUED: 19th January 2022</div>
             </a>
 
             <a href="https://courses.cognitiveclass.ai/certificates/f1f9c4b3d91c4f928cc5858f48f2a311" target="_blank" class="medal-card tilt-box stagger-item">
@@ -1215,7 +1310,7 @@ a.medal-card * {
                 </div>
                 <div class="medal-title">Data Analysis with Python</div>
                 <div class="medal-issuer">Cognitive Class</div>
-                <div class="medal-date">ISSUED: December 26, 2025 // </div>
+                <div class="medal-date">ISSUED: December 26, 2025</div>
             </a>
 
             <a href="https://aws.amazon.com/verification" target="_blank" class="medal-card tilt-box stagger-item">
@@ -1224,7 +1319,7 @@ a.medal-card * {
                 </div>
                 <div class="medal-title">Cloud Practitioner</div>
                 <div class="medal-issuer">AWS CERTIFIED</div>
-                <div class="medal-date">ISSUED: November 16, 2023 // ID: AWS-0099</div>
+                <div class="medal-date">ISSUED: November 16, 2023</div>
             </a>
 
         </div>
@@ -1238,92 +1333,76 @@ a.medal-card * {
         </div>
         
         <div class="grid reveal-on-scroll">
-            <div class="card">
-                <a href="https://github.com/AbinEast/Perfume-Shop-Web-JS">
-                    <div class="project-image">
-                        <i class="fa-solid fa-gem" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>Perfume.exe</h3>
-                    <p>E-commerce platform deployment. High-end visual hierarchy.</p>
-                    <div class="tags"><span class="tag">WEB</span><span class="tag">JAVASCRIPT</span></div>
-                </a>
-            </div>
-            
-            <div class="card">
-                <a href="https://github.com/AbinEast/Water-Quality-Check-Web">
-                    <div class="project-image">
-                        <i class="fa-solid fa-water" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>Water_Monitor_Sys</h3>
-                    <p>Research Project: turbidity and pH analysis.</p>
-                    <div class="tags"><span class="tag">WEB</span><span class="tag">PYTHON</span></div>
-                </a>
-            </div>
-            
-            <div class="card">
-                <a href="https://github.com/AbinEast/AnimChatbot">
-                    <div class="project-image">
-                        <i class="fa-solid fa-comment-dots" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>Live2D_Chatbot</h3>
-                    <p>AI Assistant prototype featuring voice synthesis.</p>
-                    <div class="tags"><span class="tag">AI</span><span class="tag">PYTHON</span></div>
-                </a>
+            <div class="card" onclick="openProject('perfume')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-gem" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>Perfume.exe</h3>
+                <p>E-commerce platform deployment. High-end visual hierarchy.</p>
+                <div class="tags"><span class="tag">WEB</span><span class="tag">JAVASCRIPT</span></div>
             </div>
 
-            <div class="card">
-                <a href="https://github.com/AbinEast/Social-Media-App-With-Flutter-and-Laravel-Back-End">
-                    <div class="project-image">
-                        <i class="fa-solid fa-comments" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>Social_Media_App</h3>
-                    <p>Social media app made using Flutter and Laravel.</p>
-                    <div class="tags"><span class="tag">FLUTTER</span><span class="tag">LARAVEL</span></div>
-                </a>
-            </div>
-            
-            <div class="card">
-                <a href="https://github.com/AbinEast/Flutter-Messager-App">
-                    <div class="project-image">
-                        <i class="fa-solid fa-envelope" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>Messenger_App</h3>
-                    <p>Research Project: mobile application that simulates a chat interface.</p>
-                    <div class="tags"><span class="tag">FLUTTER</span></div>
-                </a>
-            </div>
-            
-            <div class="card">
-                <a href="https://github.com/AbinEast/Flutter-News-Application">
-                    <div class="project-image">
-                        <i class="fa-solid fa-newspaper" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>News_App</h3>
-                    <p>News app featuring a list of news articles, a news page, and a media profile page.</p>
-                    <div class="tags"><span class="tag">FLUTTER</span></div>
-                </a>
+            <div class="card" onclick="openProject('water')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-water" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>Water_Monitor_Sys</h3>
+                <p>Research Project: turbidity and pH analysis.</p>
+                <div class="tags"><span class="tag">WEB</span><span class="tag">PYTHON</span></div>
             </div>
 
-            <div class="card">
-                <a href="https://github.com/AbinEast/etrain-app-laravel">
-                    <div class="project-image">
-                        <i class="fa-solid fa-train-subway" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>E-Train_App</h3>
-                    <p>Featuring Real time ticket order and tracking</p>
-                    <div class="tags"><span class="tag">LARAVEL</span></div>
-                </a>
+            <div class="card" onclick="openProject('chatbot')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-comment-dots" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>Live2D_Chatbot</h3>
+                <p>AI Assistant prototype featuring voice synthesis.</p>
+                <div class="tags"><span class="tag">AI</span><span class="tag">PYTHON</span></div>
             </div>
-            
-            <div class="card">
-                <a href="https://github.com/AbinEast/MyAnimeList-MAL-Scraper">
-                    <div class="project-image">
-                        <i class="fa-solid fa-toolbox" style="font-size:3rem; color:#fff;"></i>
-                    </div>
-                    <h3>MAL_Web_Scraper</h3>
-                    <p>A tool designed to extract datasets from MyAnimeList efficiently.</p>
-                    <div class="tags"><span class="tag">PYTHON</span></div>
-                </a>
+
+            <div class="card" onclick="openProject('social')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-comments" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>Social_Media_App</h3>
+                <p>Social media app made using Flutter and Laravel.</p>
+                <div class="tags"><span class="tag">FLUTTER</span><span class="tag">LARAVEL</span></div>
+            </div>
+
+            <div class="card" onclick="openProject('messenger')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-envelope" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>Messenger_App</h3>
+                <p>Mobile application that simulates a chat interface.</p>
+                <div class="tags"><span class="tag">FLUTTER</span></div>
+            </div>
+
+            <div class="card" onclick="openProject('news')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-newspaper" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>News_App</h3>
+                <p>News app featuring a list of news articles, a news page, and a media profile page.</p>
+                <div class="tags"><span class="tag">FLUTTER</span></div>
+            </div>
+
+            <div class="card" onclick="openProject('etrain')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-train-subway" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>E-Train_App</h3>
+                <p>Featuring Real time ticket order and tracking</p>
+                <div class="tags"><span class="tag">LARAVEL</span></div>
+            </div>
+
+            <div class="card" onclick="openProject('scraper')" style="cursor: pointer;">
+                <div class="project-image">
+                    <i class="fa-solid fa-toolbox" style="font-size:3rem; color:#fff;"></i>
+                </div>
+                <h3>MAL_Web_Scrape</h3>
+                <p>A tool designed to extract datasets from MyAnimeList efficiently.</p>
+                <div class="tags"><span class="tag">PYTHON</span></div>
             </div>
         </div>
     </section>
@@ -1354,8 +1433,44 @@ a.medal-card * {
         <p>RHODES ISLAND TERMINAL v2.5.5 // &copy; 2025 AbinEast</p>
     </footer>
 
-    <script>
+    <div id="project-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-window">
 
+            <button class="close-btn" onclick="closeModalButton()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-content">
+                <!--<div class="modal-image-container">
+                    <img id="modal-img" src="" alt="Project Screenshot">
+                    <div class="scan-line-img"></div>
+                </div>!-->
+
+                <div class="modal-info">
+                    <h2 id="modal-title" class="glitch-text" data-text="PROJECT_NAME">PROJECT_NAME</h2>
+                    <div class="hazard-bar" style="margin-bottom: 20px;"></div>
+                    
+                    <h4 class="mono yellow-text">// Description</h4>
+                    <p id="modal-desc">Detailed project description will appear here.</p>
+                    
+                    <h4 class="mono yellow-text" style="margin-top: 20px;">// TECH_STACK</h4>
+                    <div id="modal-tags" class="tags">
+                        </div>
+
+                    <div class="modal-actions">
+                        <a id="btn-source" href="#" target="_blank" class="btn bracket-box">
+                            <i class="fa-brands fa-github"></i> SOURCE CODE
+                        </a>
+                        <a id="btn-demo" href="#" target="_blank" class="btn bracket-box">
+                            <i class="fa-solid fa-globe"></i> LIVE DEMO
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
         // --- INTERACTIVE GRID TRACKING ---
         const gridHighlight = document.querySelector('.grid-highlight');
         
@@ -1658,6 +1773,122 @@ a.medal-card * {
         const statsInfoContainer = document.querySelector('.stats-info');
         if(statsInfoContainer) {
             statsObserver.observe(statsInfoContainer);
+        }
+
+        /* --- PROJECT MODAL LOGIC --- */
+        // DATABASE PROYEK
+        const projectData = {
+            "perfume": {
+                title: "Perfume.exe",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=PERFUME+UI", 
+                desc: "Modern, responsive e-commerce web application designed for a luxury fragrance brand. Beyond standard shopping features, it includes a unique Fragrance Builder, service booking system, and a dynamic user dashboard.",
+                tags: ["WEB", "JAVASCRIPT", "HTML", "CSS"],
+                source: "https://github.com/AbinEast/Perfume-Shop-Web-JS",
+                demo: "https://abineast.github.io/Perfume-Shop-Web-JS/" // Ganti dengan link demo jika ada
+            },
+            "water": {
+                title: "Water_Monitor_Sys",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=WATER+IOT",
+                desc: "Web-based application designed to monitor, record, and analyze river water quality across various regions. This application helps users compare water quality parameters (pH, Ammonia, BOD, TDS) against World Health Organization (WHO) standards and visualize the data effectively.",
+                tags: ["PYTHON", "FLASK", "MYSQL", 'PANDAS', 'MATPLOTLIB', "SEABORN", 'HTML', "CSS"],
+                source: "https://github.com/AbinEast/Water-Quality-Check-Web",
+                demo: "#"
+            },
+            "chatbot": {
+                title: "Live2D_Chatbot",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=AI+WAIFU",
+                desc: "An experimental AI Assistant featuring Live2D animation and voice synthesis. It uses Python for backend logic and Natural Language Processing. This project integrates Flask for the backend, Google Gemini AI for conversation logic, and PixiJS for rendering the Live2D model.",
+                tags: ["PYTHON", "FLASK", "HTML", "CSS", "JAVASCRIPT", "SQLite", "LIVE2D"],
+                source: "https://github.com/AbinEast/AnimChatbot",
+                demo: "#"
+            },
+            "social": {
+                title: "Social_Media_App",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=SOCIAL+APP",
+                desc: "Full-featured social media application built with Flutter and Laravel. Supports posting, commenting, liking, and real-time notifications.",
+                tags: ["FLUTTER", "LARAVEL"],
+                source: "https://github.com/AbinEast/Social-Media-App-With-Flutter-and-Laravel-Back-End",
+                demo: "#"
+            },
+            "messenger": {
+                title: "Messenger_App",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=SOCIAL+APP",
+                desc: "Mobile application that simulates a chat interface.",
+                tags: ["FLUTTER"],
+                source: "https://github.com/AbinEast/Flutter-Messager-App",
+                demo: "#"
+            },
+            "news": {
+                title: "News_App",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=NEWS+APP",
+                desc: "News app featuring a list of news articles, a news page, and a media profile page.",
+                tags: ["FLUTTER"],
+                source: "https://github.com/AbinEast/Flutter-News-Application",
+                demo: "#"
+            },
+            "etrain": {
+                title: "E-train_App",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=NEWS+APP",
+                desc: "Featuring Real time ticket order and tracking",
+                tags: ["LARAVEL"],
+                source: "https://github.com/AbinEast/etrain-app-laravel",
+                demo: "#"
+            },
+            "scraper": {
+                title: "MAL_Web_Scraper",
+                //img: "https://via.placeholder.com/600x400/000000/23F0FF?text=NEWS+APP",
+                desc: "A tool designed to extract datasets from MyAnimeList efficiently.",
+                tags: ["PYTHON"],
+                source: "https://github.com/AbinEast/MyAnimeList-MAL-Scraper",
+                demo: "#"
+            }
+        };
+
+        // Fungsi Membuka Modal
+        function openProject(id) {
+            const data = projectData[id];
+            if(!data) return;
+
+            // Isi konten modal
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-title').setAttribute('data-text', data.title); // Untuk efek glitch
+            //document.getElementById('modal-img').src = data.img;
+            document.getElementById('modal-desc').innerText = data.desc;
+            document.getElementById('btn-source').href = data.source;
+            
+            // Logic tombol Demo: Jika linknya "#", sembunyikan atau disable tombolnya
+            const btnDemo = document.getElementById('btn-demo');
+            if(data.demo === "#" || !data.demo) {
+                btnDemo.style.display = "none"; // Hilangkan tombol jika tidak ada demo
+            } else {
+                btnDemo.style.display = "flex";
+                btnDemo.href = data.demo;
+            }
+
+            // Generate Tags
+            const tagsContainer = document.getElementById('modal-tags');
+            tagsContainer.innerHTML = ""; // Bersihkan tags lama
+            data.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = "tag";
+                span.innerText = tag;
+                tagsContainer.appendChild(span);
+            });
+
+            // Tampilkan Modal
+            document.getElementById('project-modal').classList.add('active');
+        }
+
+        // Fungsi Menutup Modal
+        function closeModalButton() {
+            document.getElementById('project-modal').classList.remove('active');
+        }
+
+        // Tutup jika klik di luar area modal (overlay)
+        function closeModal(e) {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModalButton();
+            }
         }
     </script>
 </body>
